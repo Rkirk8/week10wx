@@ -43,7 +43,11 @@ const createScene = async function() {
     box.position.z = 1.5;
 
     // STEP 7: Let's create another native mesh object for interactive purposes
-    
+    const can = BABYLON.MeshBuilder.CreateCylinder("can", {diameter: 0.1, height: 0.3, tessellation: 10}, scene);
+    const canMat = new BABYLON.StandardMaterial("canMat");
+    canMat.diffuseColor = new BABYLON.Color3(1, 0, 0.6);
+    can.material = canMat;
+    can.position.x = 0.5;
 
     /* SOUNDS
     ---------------------------------------------------------------------------------------------------- */
@@ -107,17 +111,21 @@ const createScene = async function() {
 
 
     // STEP 6a: Instead, let's register one action to run some code on each click - this will side-step the issue
-    
+    box.actionManager.registerAction(
         // STEP 6b: Add a new BABYLON.ExecuteCodeAction
-        
+        new BABYLON.ExecuteCodeAction(
             // STEP 6c: Add a OnPickTrigger that references a function called changeBoxColor
-            
-
+            BABYLON.ActionManager.OnPickTrigger,
+            changeBoxColor
+        )
+    );
     // STEP 6d: Build a simple function to change the material.diffuseColor of the box to a random color
-    
+    function changeBoxColor() {
+        box.material.diffuseColor = BABYLON.Color3.Random();
+    }
 
     // STEP 8: Make the can grabbable and moveable (awesome)! 
-    
+    can.backCurrentTransformIntoVertices().addBehavior(new BABYLON.SixDofDragBehavior());
 
 
     // Return the scene
